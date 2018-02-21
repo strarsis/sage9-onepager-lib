@@ -1,6 +1,6 @@
 {
     "name": "strarsis/sage9-onepager-lib",
-    "description": "Single page support for Sage 9 based themes. (Adopted from WordPress TwentySeventeen theme.)",
+    "description": "Single page support for Sage 9 based themes. – Helper library (Adopted from WordPress TwentySeventeen theme.)",
     "type": "library",
     "license": "MIT",
     "authors": [
