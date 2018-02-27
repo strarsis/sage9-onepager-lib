@@ -3,7 +3,7 @@
 Code from https://github.com/WordPress/WordPress/blob/aaf99e691391cfceb004d848450dbbf3344b1bee/wp-content/themes/twentyseventeen/inc/customizer.php
 */
 
-class Onepager_Extension_Controls {
+class Controls {
 
 	public static function init() {
 		add_action( 'customize_register',                 '\Onepager_Extension_Controls::customize_register' );
