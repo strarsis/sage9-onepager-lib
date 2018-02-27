@@ -11,7 +11,7 @@
     ],
     "autoload": {
       "psr-4": {
-        "strarsis\\Sage9OnePager\\": ""
+        "strarsis\\Sage9Onepager\\": ""
       }
     },
     "require": {}
