@@ -4,7 +4,7 @@ See https://github.com/strarsis/sage9-onepager-themefiles for the theme related 
 In `setup.php`:
 ```php
 add_action('after_setup_theme', function () {
-    \Onepager_Extension_Controls::init();
+    \strarsis\Sage9Onepager\Controls::init();
 });
 ````
 
