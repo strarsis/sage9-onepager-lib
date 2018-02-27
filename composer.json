@@ -9,5 +9,10 @@
             "email": "strarsis@gmail.com"
         }
     ],
+    "autoload": {
+      "psr-4": {
+        "strarsis\\Sage9OnePager\\": ""
+      },
+    },
     "require": {}
 }
