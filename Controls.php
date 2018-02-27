@@ -8,9 +8,9 @@ namespace strarsis\Sage9Onepager;
 class Controls {
 
 	public static function init() {
-		add_action( 'customize_register',                 '\Onepager_Extension_Controls::customize_register' );
-		add_action( 'customize_controls_enqueue_scripts', '\Onepager_Extension_Controls::panels_js' );
-		add_action( 'customize_preview_init', 		      '\Onepager_Extension_Controls::customize_preview_js' );
+		add_action( 'customize_register',                 '\strarsis\Sage9Onepager\Controls::customize_register' );
+		add_action( 'customize_controls_enqueue_scripts', '\strarsis\Sage9Onepager\Controls::panels_js' );
+		add_action( 'customize_preview_init', 		      '\strarsis\Sage9Onepager\Controls::customize_preview_js' );
 	}
 
 	public static function customize_register( $wp_customize ) {
@@ -44,13 +44,13 @@ class Controls {
 					'section'         => 'theme_options',
 					'type'            => 'dropdown-pages',
 					'allow_addition'  => true,
-					'active_callback' => '\Onepager_Extension_Controls::is_static_front_page',
+					'active_callback' => '\strarsis\Sage9Onepager\Controls::is_static_front_page',
 				)
 			);
 			$wp_customize->selective_refresh->add_partial(
 				'panel_' . $i, array(
 					'selector'            => '#panel' . $i,
-					'render_callback'     => '\Onepager_Extension_Controls::onepager_front_page_section',
+					'render_callback'     => '\strarsis\Sage9Onepager\Controls::onepager_front_page_section',
 					'container_inclusive' => true,
 				)
 			);
@@ -128,7 +128,3 @@ class Controls {
 		return get_template_directory_uri() . '/..' . $prefix;
 	}
 }
-
-
-// Initialize (in setup.php) using
-// Onepager_Extension_Controls::->init();
