@@ -86,28 +86,22 @@ class Controls {
 	 * Primarily used to see if we have any panels active, duh.
 	 */
 	public static function panel_count() {
-		$panels = array( '1', '2', '3', '4' );
-		$panel_count = 0;
-		foreach ( $panels as $panel ) {
-			if ( get_theme_mod( 'panel_' . $panel ) ) {
-				$panel_count++;
-			}
-		}
-		return $panel_count;
+		return count(\strarsis\Sage9Onepager\Controls::panels());
 	}
 	
 	/**
-	 * Get the IDs of the posts assigned to a panel
+	 * Get the the posts assigned as panel
 	 *
 	 * Primarily used to see if we have any panels active, duh.
 	 */
-	public static function panel_ids() {
-	    $panel_count = \strarsis\Sage9Onepager\Controls::panel_count();
-	    $panel_ids   = array();
-	    for($panel = 0; $panel <= $panel_count; $panel++) {
-		$panel_ids[] = get_theme_mod( 'panel_' . $panel );
-	    }
-	    return $panel_ids;
+	public static function panels() {
+		$panels = array();
+		$panelIndex = 1; // starts with 1!
+		while( !empty($panel = get_theme_mod( 'panel_' . $panelIndex )) ) {
+			$panels[] = $panel;
+			$panelIndex++;
+		}
+	    return $panels;
 	}
 
 	/**
