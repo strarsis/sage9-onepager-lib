@@ -101,7 +101,7 @@ class Controls {
 	 *
 	 * Primarily used to see if we have any panels active, duh.
 	 */
-	public static function get_panel_ids() {
+	public static function panel_ids() {
 	    $panel_count = \strarsis\Sage9Onepager\Controls::panel_count();
 	    $panel_ids   = array();
 	    for($panel = 0; $panel <= $panel_count; $panel++) {
