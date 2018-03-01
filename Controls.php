@@ -138,7 +138,7 @@ class Controls {
 
 
 	public static function get_lib_url() {
-		$prefix = '/vendor/strarsis/onepager';
+		$prefix = '/vendor/strarsis/sage9-onepager-lib';
 		return get_template_directory_uri() . '/..' . $prefix;
 	}
 }
