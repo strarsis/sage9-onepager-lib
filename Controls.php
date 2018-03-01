@@ -95,6 +95,20 @@ class Controls {
 		}
 		return $panel_count;
 	}
+	
+	/**
+	 * Get the IDs of the posts assigned to a panel
+	 *
+	 * Primarily used to see if we have any panels active, duh.
+	 */
+	public static function get_panel_ids() {
+	    $panel_count = \strarsis\Sage9Onepager\Controls::panel_count();
+	    $panel_ids   = array();
+	    for($panel = 0; $panel <= $panel_count; $panel++) {
+		$panel_ids[] = get_theme_mod( 'panel_' . $panel );
+	    }
+	    return $panel_ids;
+	}
 
 	/**
 	 * Display a front page section.
