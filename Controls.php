@@ -114,7 +114,7 @@ class Controls {
 		if ( is_a( $partial, 'WP_Customize_Partial' ) ) {
 			// Find out the id and set it up during a selective refresh.
 			global $onepagercounter;
-			$id                     = str_replace( 'panel_', '', $partial->id );
+			$id              = str_replace( 'panel_', '', $partial->id );
 			$onepagercounter = $id;
 		}
 		global $post; // Modify the global post object before setting up post data.
@@ -122,7 +122,14 @@ class Controls {
 			$post = get_post( get_theme_mod( 'panel_' . $id ) );
 			setup_postdata( $post );
 			set_query_var( 'panel', $id );
+
+
 			echo \App\template('single-panels');
+
+			if(  function_exists('mesh_display_sections')  )
+				echo mesh_display_sections( $post->ID, true );
+
+
 			wp_reset_postdata();
 		} elseif ( is_customize_preview() ) {
 			// The output placeholder anchor.
