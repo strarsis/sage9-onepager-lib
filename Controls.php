@@ -88,7 +88,7 @@ class Controls {
 	public static function panel_count() {
 		return count(\strarsis\Sage9Onepager\Controls::panels());
 	}
-	
+
 	/**
 	 * Get the the posts assigned as panel
 	 *
@@ -124,10 +124,17 @@ class Controls {
 			set_query_var( 'panel', $id );
 
 
-			echo \App\template('single-panels');
+			$template_data = array();
+			if(  function_exists('mesh_display_sections')  ) {
+				$template_data['end'] = mesh_display_sections( $post->ID, false );
 
-			if(  function_exists('mesh_display_sections')  )
-				echo mesh_display_sections( $post->ID, true );
+				// reset $post (mesh_display_sections)
+				$post = get_post( get_theme_mod( 'panel_' . $id ) );
+				setup_postdata( $post );
+				set_query_var( 'panel', $id );
+			}
+
+			echo \App\template(  'single-panels', $template_data  );
 
 
 			wp_reset_postdata();
@@ -137,7 +144,7 @@ class Controls {
 		}
 	}
 
-	/**
+    /**
 	 * Returns an accessibility-friendly link to edit a post or page.
 	 *
 	 * This also gives us a little context about what exactly we're editing
