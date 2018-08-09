@@ -2,6 +2,7 @@ This library contains helpers to be used by sage 9 based theme.
 
 See [sage9-onepager-themefiles](https://github.com/strarsis/sage9-onepager-themefiles) for the theme related files.
 
+
 ## Installation
 
 1. Install this helper library
