@@ -120,6 +120,24 @@ class Controls {
 		global $post; // Modify the global post object before setting up post data.
 		if ( get_theme_mod( 'panel_' . $id ) ) {
 			$post = get_post( get_theme_mod( 'panel_' . $id ) );
+
+
+			// Translation plugin support
+			// Polylang support
+			if(  function_exists('pll_get_post')  ) {
+				$post_translated_id = pll_get_post($post->ID);
+				if($post_translated_id)
+					$post = get_post($post_translated_id);
+			}
+
+			// WPML support
+			if(  function_exists('icl_object_id')  ) {
+				$post_translated_id = icl_object_id($post->ID);
+				if($post_translated_id)
+					$post = get_post($post_translated_id);
+			}
+
+
 			setup_postdata( $post );
 			set_query_var( 'panel', $id );
 
