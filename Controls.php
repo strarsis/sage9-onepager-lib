@@ -8,15 +8,15 @@ namespace strarsis\Sage9Onepager;
 class Controls {
 
 	public static function init() {
-		add_action( 'customize_register',                 '\strarsis\Sage9Onepager\Controls::customize_register' );
+		add_action( 'customize_register',				 '\strarsis\Sage9Onepager\Controls::customize_register' );
 		add_action( 'customize_controls_enqueue_scripts', '\strarsis\Sage9Onepager\Controls::panels_js' );
-		add_action( 'customize_preview_init', 		      '\strarsis\Sage9Onepager\Controls::customize_preview_js' );
+		add_action( 'customize_preview_init', 			  '\strarsis\Sage9Onepager\Controls::customize_preview_js' );
 	}
 
 	public static function customize_register( $wp_customize ) {
 		$wp_customize->add_section(
 			'theme_options', array(
-				'title'    => __( 'Pages', 'onepager' ),
+				'title'	=> __( 'Pages', 'onepager' ),
 				'priority' => 130,
 			)
 		);
@@ -31,26 +31,26 @@ class Controls {
 		for ( $i = 1; $i < ( 1 + $num_sections ); $i++ ) {
 			$wp_customize->add_setting(
 				'panel_' . $i, array(
-					'default'           => false,
+					'default'		   => false,
 					'sanitize_callback' => 'absint',
-					'transport'         => 'postMessage',
+					'transport'		 => 'postMessage',
 				)
 			);
 			$wp_customize->add_control(
 				'panel_' . $i, array(
 					/* translators: %d is the front page section number */
-					'label'           => sprintf( __( 'Front Page Section %d Content', 'onepager' ), $i ),
-					'description'     => ( 1 !== $i ? '' : __( 'Select pages to feature in each area from the dropdowns. Add an image to a section by setting a featured image in the page editor. Empty sections will not be displayed.', 'onepager' ) ),
-					'section'         => 'theme_options',
-					'type'            => 'dropdown-pages',
+					'label'		   => sprintf( __( 'Front Page Section %d Content', 'onepager' ), $i ),
+					'description'	 => ( 1 !== $i ? '' : __( 'Select pages to feature in each area from the dropdowns. Add an image to a section by setting a featured image in the page editor. Empty sections will not be displayed.', 'onepager' ) ),
+					'section'		 => 'theme_options',
+					'type'			=> 'dropdown-pages',
 					'allow_addition'  => true,
 					'active_callback' => '\strarsis\Sage9Onepager\Controls::is_static_front_page',
 				)
 			);
 			$wp_customize->selective_refresh->add_partial(
 				'panel_' . $i, array(
-					'selector'            => '#panel' . $i,
-					'render_callback'     => '\strarsis\Sage9Onepager\Controls::onepager_front_page_section',
+					'selector'			=> '#panel' . $i,
+					'render_callback'	 => '\strarsis\Sage9Onepager\Controls::onepager_front_page_section',
 					'container_inclusive' => true,
 				)
 			);
@@ -101,24 +101,24 @@ class Controls {
 			$panels[] = $panel;
 			$panelIndex++;
 		}
-	    return $panels;
+		return $panels;
 	}
 
-    // Translation plugin support
+	// Translation plugin support
 	public static function translated_post_id( $post_id = 0 ) {
 
 		// Polylang support
 		if(  function_exists('pll_get_post')  ) {
 			$post_translated_id = pll_get_post($post_id);
 			if($post_translated_id)
-                return $post_translated_id;
+				return $post_translated_id;
 		}
 
 		// WPML support
 		if(  function_exists('icl_object_id')  ) {
 			$post_translated_id = icl_object_id($post_id);
-            if($post_translated_id)
-                return $post_translated_id;
+			if($post_translated_id)
+				return $post_translated_id;
 		}
 
 		return $post_id;
@@ -128,45 +128,56 @@ class Controls {
 	 * Display a front page section.
 	 *
 	 * @param WP_Customize_Partial $partial Partial associated with a selective refresh request.
-	 * @param integer              $id Front page section to display.
+	 * @param integer			  $id Front page section to display.
 	 */
 	public static function front_page_section( $partial = null, $id = 0 ) {
 		if ( is_a( $partial, 'WP_Customize_Partial' ) ) {
 			// Find out the id and set it up during a selective refresh.
 			global $onepagercounter;
-			$id              = str_replace( 'panel_', '', $partial->id );
+			$id			  = str_replace( 'panel_', '', $partial->id );
 			$onepagercounter = $id;
 		}
 		global $post; // Modify the global post object before setting up post data.
 
-        $post_id = self::translated_post_id( get_theme_mod( 'panel_' . $id ) );
-		$post    = get_post( $post_id );
 
-		if ( $post ) {
+		$post_id = self::translated_post_id( get_theme_mod( 'panel_' . $id ) );
+        if ( !$post_id ) {
+            //self::output_placeholder_anchor($id);
+            return;
+        }
+
+		if($post_id)
+			$post = get_post( $post_id );
+        if ( !$post ) {
+            //self::output_placeholder_anchor($id);
+            return;
+        }
+
+
+		setup_postdata( $post );
+		set_query_var( 'panel', $id );
+
+		$template_data = array();
+		if(  function_exists('mesh_display_sections')  ) {
+			$template_data['end'] = mesh_display_sections( $post->ID, false );
+
+			// reset $post (Mesh plugin support (mesh_display_sections))
+			$post = get_post( get_theme_mod( 'panel_' . $id ) );
 			setup_postdata( $post );
 			set_query_var( 'panel', $id );
-
-			$template_data = array();
-			if(  function_exists('mesh_display_sections')  ) {
-				$template_data['end'] = mesh_display_sections( $post->ID, false );
-
-				// reset $post (Mesh plugin support (mesh_display_sections))
-				$post = get_post( get_theme_mod( 'panel_' . $id ) );
-				setup_postdata( $post );
-				set_query_var( 'panel', $id );
-			}
-
-			echo \App\template(  'single-panels', $template_data  );
-
-
-			wp_reset_postdata();
-		} elseif ( is_customize_preview() ) {
-			// The output placeholder anchor.
-			echo '<article class="panel-placeholder panel onepager-panel onepager-panel' . $id . '" id="panel' . $id . '"><span class="onepager-panel-title">' . sprintf( __( 'Front Page Section %1$s Placeholder', 'onepager' ), $id ) . '</span></article>';
 		}
+
+		echo \App\template(  'single-panels', $template_data  );
+
+
+		wp_reset_postdata();
 	}
 
-    /**
+    protected static function output_placeholder_anchor($id) {
+        echo '<article class="panel-placeholder panel onepager-panel onepager-panel' . $id . '" id="panel' . $id . '"><span class="onepager-panel-title">' . sprintf( __( 'Front Page Section %1$s Placeholder', 'onepager' ), $id ) . '</span></article>';
+    }
+
+	/**
 	 * Returns an accessibility-friendly link to edit a post or page.
 	 *
 	 * This also gives us a little context about what exactly we're editing
