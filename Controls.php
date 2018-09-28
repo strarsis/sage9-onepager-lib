@@ -86,7 +86,7 @@ class Controls {
 	 * Primarily used to see if we have any panels active, duh.
 	 */
 	public static function panel_count() {
-		return count(\strarsis\Sage9Onepager\Controls::panels());
+		return count(self::panels());
 	}
 
 	/**
@@ -104,6 +104,26 @@ class Controls {
 	    return $panels;
 	}
 
+    // Translation plugin support
+	public static function translated_post_id( $post_id = 0 ) {
+
+		// Polylang support
+		if(  function_exists('pll_get_post')  ) {
+			$post_translated_id = pll_get_post($post_id);
+			if($post_translated_id)
+                return $post_translated_id;
+		}
+
+		// WPML support
+		if(  function_exists('icl_object_id')  ) {
+			$post_translated_id = icl_object_id($post_id);
+            if($post_translated_id)
+                return $post_translated_id;
+		}
+
+		return $post_id;
+	}
+
 	/**
 	 * Display a front page section.
 	 *
@@ -118,35 +138,19 @@ class Controls {
 			$onepagercounter = $id;
 		}
 		global $post; // Modify the global post object before setting up post data.
-		if ( get_theme_mod( 'panel_' . $id ) ) {
-			$post = get_post( get_theme_mod( 'panel_' . $id ) );
 
+        $post_id = self::translated_post_id( get_theme_mod( 'panel_' . $id ) );
+		$post    = get_post( $post_id );
 
-			// Translation plugin support
-			// Polylang support
-			if(  function_exists('pll_get_post')  ) {
-				$post_translated_id = pll_get_post($post->ID);
-				if($post_translated_id)
-					$post = get_post($post_translated_id);
-			}
-
-			// WPML support
-			if(  function_exists('icl_object_id')  ) {
-				$post_translated_id = icl_object_id($post->ID);
-				if($post_translated_id)
-					$post = get_post($post_translated_id);
-			}
-
-
+		if ( $post ) {
 			setup_postdata( $post );
 			set_query_var( 'panel', $id );
-
 
 			$template_data = array();
 			if(  function_exists('mesh_display_sections')  ) {
 				$template_data['end'] = mesh_display_sections( $post->ID, false );
 
-				// reset $post (mesh_display_sections)
+				// reset $post (Mesh plugin support (mesh_display_sections))
 				$post = get_post( get_theme_mod( 'panel_' . $id ) );
 				setup_postdata( $post );
 				set_query_var( 'panel', $id );
