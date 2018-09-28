@@ -79,7 +79,7 @@ class Helpers {
         foreach($panel_post_ids as $panel_post_id) {
             $panel_post_translated_ids = self::translated_post_ids( $panel_post_id );
             if(in_array($post->ID, $panel_post_translated_ids)) {
-				wp_safe_redirect( home_url() );
+				wp_redirect( home_url() . '#' . $post->post_name );
 				die();
 				return;
 			}
