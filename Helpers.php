@@ -73,7 +73,7 @@ class Helpers {
 	 */
 	public static function redirect_included_pages_to_frontpage() {
 		global $post;
-		if(!isset($post)) return $url;
+		if(!isset($post)) return;
 
         $panel_post_ids = Controls::panels();
         foreach($panel_post_ids as $panel_post_id) {
